@@ -23,6 +23,12 @@ public class CityService {
                 .toList();
     }
 
+    public CityDTO findById(Long id) {
+        City foundCity = cityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("City with id " + id + " not found"));
+        return toDTO(foundCity);
+    }
+
     public CityDTO save(CityDTO cityDTO) {
         City savedCity = cityRepository.save(toEntity(cityDTO));
         return toDTO(savedCity);

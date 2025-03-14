@@ -24,7 +24,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/consulta")
+                        .defaultSuccessUrl("/clima/consulta")
                         .permitAll()
                 )
                 .logout(logout -> logout
