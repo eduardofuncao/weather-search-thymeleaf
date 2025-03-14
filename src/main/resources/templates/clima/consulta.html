@@ -11,7 +11,6 @@
     </style>
 </head>
 <body>
-<!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
         <a class="navbar-brand" href="/home" th:text="#{app.title}">Weather App</a>
@@ -43,9 +42,8 @@
 <div class="container my-4">
     <h2 th:text="#{weather.consult.title}">Weather Consultation</h2>
 
-    <!-- Alert for error messages -->
     <div class="alert alert-danger" th:if="${erro}" th:text="${erro}">
-        Error message will appear here.
+        Error message here.
     </div>
 
     <div class="card">
@@ -66,7 +64,6 @@
         </div>
     </div>
 
-    <!-- Language Selection -->
     <div class="mt-4">
         <span th:text="#{language.change}">Change Language:</span>
         <a href="?lang=pt_BR">Português</a> |
@@ -74,7 +71,6 @@
     </div>
 </div>
 
-<!-- Footer -->
 <footer class="bg-light py-3 mt-5">
     <div class="container text-center">
         <p class="text-muted mb-0" th:text="#{app.footer}">© 2025 Weather Application - All rights reserved</p>

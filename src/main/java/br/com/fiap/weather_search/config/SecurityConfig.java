@@ -18,8 +18,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/cadastro").hasRole("ADMIN")
-                        .requestMatchers("/consulta", "/fetch").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/home").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/clima/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -30,9 +31,6 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .permitAll()
                 );
-
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
-        http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }

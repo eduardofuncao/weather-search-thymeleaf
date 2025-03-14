@@ -42,6 +42,7 @@ public class WeatherInfoController {
     public String mostrarResultado(@PathVariable("cidadeId") Long cidadeId, Model model) {
         try {
             WeatherInfoDTO weatherInfoDTO = weatherInfoService.fetchByCityId(cidadeId);
+            model.addAttribute("city", cityService.findById(cidadeId));
             model.addAttribute("weatherInfo", weatherInfoDTO);
             model.addAttribute("cities", cityService.findAll());
             return "clima/resultado";

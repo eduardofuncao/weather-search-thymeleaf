@@ -1,12 +1,124 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en_us">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{app.title}">Weather App</title>
+    <title th:text="#{weather.history.title} + ' | ' + #{app.title}">Weather History | Weather App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .container { max-width: 800px; }
+        .weather-icon { font-size: 1.5rem; }
+    </style>
+</head>
 <body>
-<div class="alert">não implementado</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/home" th:text="#{app.title}">Weather App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home" th:text="#{menu.home}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/clima/consulta" th:text="#{menu.weather}">Weather</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" href="/admin/cidades" th:text="#{menu.cities}">Cities</a>
+                </li>
+            </ul>
+            <div class="d-flex">
+                <span class="navbar-text me-3" sec:authentication="name">Username</span>
+                <form th:action="@{/logout}" method="post">
+                    <button class="btn btn-outline-light btn-sm" type="submit" th:text="#{menu.logout}">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <span th:text="#{weather.history.title}">Weather History</span>
+            <span th:text="' - ' + ${city.name}">- City Name</span>
+        </h2>
+        <div>
+            <a th:href="@{/clima/consulta}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>
+                <span th:text="#{button.back}">Back</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <span th:text="#{weather.history.records}">Weather Records</span>
+                <span>
+                    <i class="bi bi-geo-alt me-1"></i>
+                    <span th:text="${city.latitude} + ', ' + ${city.longitude}">-23.55, -46.64</span>
+                </span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th th:text="#{weather.datetime}">Date/Time</th>
+                        <th th:text="#{weather.conditions}">Conditions</th>
+                        <th th:text="#{weather.temperature}">Temperature</th>
+                        <th th:text="#{weather.wind}">Wind</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="record : ${records}">
+                        <td th:text="${#temporals.format(record.searchTime, 'dd/MM/yyyy HH:mm')}">12/03/2025 14:30</td>
+                        <td>
+                            <i class="bi weather-icon me-2"
+                               th:classappend="${record.weatherConditions.contains('Céu limpo')} ? 'bi-sun text-warning' :
+                                                   (${record.weatherConditions.contains('nublado')} ? 'bi-cloud text-secondary' :
+                                                   (${record.weatherConditions.contains('Chuva')} ? 'bi-cloud-rain text-primary' :
+                                                   (${record.weatherConditions.contains('Neve')} ? 'bi-snow text-info' :
+                                                   (${record.weatherConditions.contains('Tempestade')} ? 'bi-cloud-lightning-rain text-danger' : 'bi-cloud-haze text-secondary'))))"></i>
+                            <span th:text="${record.weatherConditions}">Clear sky</span>
+                        </td>
+                        <td th:text="${#numbers.formatDecimal(record.temperature, 0, 1)} + '°C'">25.0°C</td>
+                        <td th:text="${#numbers.formatDecimal(record.windSpeed, 0, 1)} + ' km/h'">10.5 km/h</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(records)}">
+                        <td colspan="4" class="text-center" th:text="#{weather.history.empty}">No weather records found for this city.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a th:href="@{/clima/consulta}" class="btn btn-primary">
+            <i class="bi bi-search me-2"></i>
+            <span th:text="#{weather.search.another}">Search Another City</span>
+        </a>
+    </div>
+
+    <div class="mt-4">
+        <span th:text="#{language.change}">Change Language:</span>
+        <a href="?lang=pt_BR">Português</a> |
+        <a href="?lang=en_US">English</a>
+    </div>
+</div>
+
+<footer class="bg-light py-3 mt-5">
+    <div class="container text-center">
+        <p class="text-muted mb-0" th:text="#{app.footer}">© 2025 Weather Application - All rights reserved</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

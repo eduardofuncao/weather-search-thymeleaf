@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Controller criado apenas para teste das funcionalidades
+// Controller criado apenas para teste das funcionalidades - desconsiderar
 @RestController
 @RequestMapping("api/")
 public class testController {
